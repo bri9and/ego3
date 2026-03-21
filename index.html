@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEON — Digital Systems</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --amber: #00ff41;
+    --amber-bright: #80ffa0;
+    --amber-dim: rgba(0, 255, 65, 0.4);
+    --amber-glow: rgba(0, 255, 65, 0.12);
+    --bg: rgba(10, 10, 10, 0.75);
+    --bg-solid: #0a0a0a;
+    --bg-card: rgba(8, 14, 8, 0.82);
+    --text: #c0d4c0;
+    --text-dim: rgba(180, 220, 180, 0.45);
+    --text-bright: #e4f0e4;
+    --border: rgba(0, 255, 65, 0.1);
+    --border-hover: rgba(0, 255, 65, 0.3);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-solid);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ─── FIXED BACKGROUND ─── */
+  .rain-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .rain-bg iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* ─── TOP NAV BAR ─── */
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s ease;
+  }
+
+  .topbar.scrolled {
+    background: rgba(10, 10, 10, 0.88);
+  }
+
+  .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 18px;
+    background: var(--amber);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .nav-link:hover {
+    color: #fff;
+    background: rgba(0, 255, 65, 0.12);
+    border-color: var(--border-hover);
+    text-shadow: 0 0 10px var(--amber), 0 0 20px rgba(0, 255, 65, 0.3);
+  }
+
+  .nav-link.active {
+    color: var(--amber);
+    border-color: var(--border);
+  }
+
+  .nav-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bg-solid);
+    background: var(--amber);
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-cta:hover {
+    background: var(--amber-bright);
+    box-shadow: 0 0 20px var(--amber-dim);
+  }
+
+  /* ─── MOBILE NAV ─── */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .nav-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--amber);
+    margin: 5px 0;
+    transition: all 0.3s ease;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  .hero-content {
+    max-width: 720px;
+  }
+
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: rgba(0, 255, 65, 0.05);
+  }
+
+  .hero-tag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; box-shadow: none; }
+    50% { opacity: 1; box-shadow: 0 0 8px var(--amber); }
+  }
+
+  .hero h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-bright);
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 .highlight {
+    color: var(--amber);
+    position: relative;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin: 0 auto 40px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--amber);
+    color: var(--bg-solid);
+    border: 1px solid var(--amber);
+  }
+
+  .btn-primary:hover {
+    background: var(--amber-bright);
+    box-shadow: 0 0 30px var(--amber-dim);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--amber);
+    border: 1px solid var(--border-hover);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(0, 255, 65, 0.1);
+    border-color: var(--amber);
+    text-shadow: 0 0 10px var(--amber-dim);
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: floatDown 2s ease-in-out infinite;
+  }
+
+  .scroll-indicator span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .scroll-indicator-line {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, var(--amber-dim), transparent);
+  }
+
+  @keyframes floatDown {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 120px 40px;
+  }
+
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .section-inner.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: '//';
+    color: var(--amber-dim);
+  }
+
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .section-desc {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 560px;
+  }
+
+  /* ─── ABOUT ─── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 60px;
+    align-items: center;
+  }
+
+  .about-text p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-dim);
+  }
+
+  .about-text p + p {
+    margin-top: 16px;
+  }
+
+  .about-terminal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    padding: 12px 16px;
+    background: rgba(0, 255, 65, 0.04);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(0, 255, 65, 0.2);
+  }
+
+  .terminal-dot:first-child { background: rgba(200, 100, 100, 0.4); }
+  .terminal-dot:nth-child(2) { background: rgba(200, 180, 100, 0.4); }
+  .terminal-dot:nth-child(3) { background: rgba(100, 180, 100, 0.4); }
+
+  .terminal-body {
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-dim);
+  }
+
+  .terminal-body .prompt {
+    color: var(--amber);
+  }
+
+  .terminal-body .output {
+    color: var(--text);
+  }
+
+  .terminal-body .comment {
+    color: rgba(0, 255, 65, 0.3);
+  }
+
+  /* ─── SERVICES ─── */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .service-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 28px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber-dim), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .service-card:hover::after { opacity: 1; }
+
+  .service-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  }
+
+  .service-index {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--amber-dim);
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+  }
+
+  .service-card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+  }
+
+  .service-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+
+  /* ─── WORK / PROJECTS ─── */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .work-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px 32px;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .work-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  }
+
+  .work-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .work-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(0, 255, 65, 0.05);
+  }
+
+  .work-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .work-card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+
+  .work-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+
+  .work-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .work-stack span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  /* ─── STATS ─── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .stat-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 20px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--amber);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .test-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px;
+  }
+
+  .test-quote {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text);
+    font-style: italic;
+    margin-bottom: 24px;
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px solid var(--border);
+  }
+
+  .test-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .test-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--amber-dim), var(--amber-glow));
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+  }
+
+  .test-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+
+  .test-role {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ─── CONTACT ─── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 60px;
+    align-items: start;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--amber-dim);
+  }
+
+  .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .contact-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 8px;
+    background: var(--amber-glow);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--amber);
+  }
+
+  .contact-line-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .contact-line-value {
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .footer-links a:hover {
+    color: #fff;
+    text-shadow: 0 0 8px var(--amber-dim);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: block; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(16px);
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 4px;
+    }
+    .nav-cta { margin-left: 0; }
+    .services-grid { grid-template-columns: 1fr; }
+    .work-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .section { padding: 80px 20px; }
+    .footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .topbar { padding: 0 20px; }
+    .hero h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="rain-bg">
+  <iframe src="digital-rain.html" title="Digital Rain"></iframe>
+</div>
+
+<!-- ─── TOP NAV ─── -->
+<nav class="topbar">
+  <a href="#" class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">
+    NEON<span class="brand-cursor"></span>
+  </a>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="#about" class="nav-link">About</a>
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#work" class="nav-link">Work</a>
+    <a href="#impact" class="nav-link">Impact</a>
+    <a href="#voices" class="nav-link">Voices</a>
+    <a href="#contact" class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-tag">
+      <div class="hero-tag-dot"></div>
+      Systems Online
+    </div>
+    <h1>We build <span class="highlight">digital<br>infrastructure</span> that lasts</h1>
+    <p class="hero-sub">Engineering resilient systems, secure architectures, and interfaces that feel like the future — without breaking under pressure.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn btn-primary">View Projects &rarr;</a>
+      <a href="#contact" class="btn btn-ghost">Start a Conversation</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-indicator-line"></div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-label">About</div>
+    <h2 class="section-title">Code is architecture.<br>We treat it that way.</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>NEON is a digital systems studio. We design and engineer backends, APIs, data pipelines, and interfaces for teams who need things to work at scale — reliably, securely, and without ceremony.</p>
+        <p>Founded by engineers who got tired of fragile systems dressed up in pretty dashboards. We focus on what matters: correctness, performance, and maintainability.</p>
+      </div>
+      <div class="about-terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+        </div>
+        <div class="terminal-body">
+          <div><span class="comment"># system check</span></div>
+          <div><span class="prompt">$ </span><span class="output">neon status</span></div>
+          <div>&nbsp;</div>
+          <div><span class="output">uptime ........ 99.97%</span></div>
+          <div><span class="output">latency ....... 12ms p99</span></div>
+          <div><span class="output">deployments ... 847</span></div>
+          <div><span class="output">incidents ..... 0 (90d)</span></div>
+          <div>&nbsp;</div>
+          <div><span class="prompt">$ </span><span class="brand-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ─── -->
+<section class="section" id="services">
+  <div class="section-inner">
+    <div class="section-label">Services</div>
+    <h2 class="section-title">What we do</h2>
+    <div class="section-desc">
+      <p>End-to-end engineering — from architecture through deployment and beyond.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-index">01</div>
+        <h3>Backend Systems</h3>
+        <p>Distributed services, message queues, event-driven architectures. Built for throughput and fault tolerance.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-index">02</div>
+        <h3>API Design</h3>
+        <p>RESTful and GraphQL APIs with clear contracts, versioning, and documentation that developers actually use.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-index">03</div>
+        <h3>Data Pipelines</h3>
+        <p>Real-time and batch processing. Ingest, transform, store, query — at any volume, with lineage tracking.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-index">04</div>
+        <h3>Security Audits</h3>
+        <p>Threat modeling, penetration testing, and hardening. We find the cracks before someone else does.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-index">05</div>
+        <h3>Cloud Infrastructure</h3>
+        <p>Terraform, Kubernetes, CI/CD. Infrastructure as code that your team can actually maintain and extend.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-index">06</div>
+        <h3>Interface Engineering</h3>
+        <p>Performance-obsessed frontends. Accessibility, responsiveness, and sub-second load times are non-negotiable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WORK ─── -->
+<section class="section" id="work">
+  <div class="section-inner">
+    <div class="section-label">Work</div>
+    <h2 class="section-title">Selected projects</h2>
+    <div class="work-grid">
+      <div class="work-card">
+        <div class="work-card-header">
+          <span class="work-tag">Infrastructure</span>
+          <span class="work-year">2026</span>
+        </div>
+        <h3>Meridian Trading Platform</h3>
+        <p>High-frequency order matching engine processing 2M+ events/sec with sub-millisecond latency and zero downtime deployments.</p>
+        <div class="work-stack">
+          <span>Rust</span><span>Kafka</span><span>ScyllaDB</span><span>K8s</span>
+        </div>
+      </div>
+      <div class="work-card">
+        <div class="work-card-header">
+          <span class="work-tag">Data</span>
+          <span class="work-year">2025</span>
+        </div>
+        <h3>Atlas Climate Pipeline</h3>
+        <p>Global sensor ingestion platform processing 40TB/day of satellite and ground-station climate telemetry into queryable datasets.</p>
+        <div class="work-stack">
+          <span>Go</span><span>Apache Flink</span><span>Parquet</span><span>DuckDB</span>
+        </div>
+      </div>
+      <div class="work-card">
+        <div class="work-card-header">
+          <span class="work-tag">Security</span>
+          <span class="work-year">2025</span>
+        </div>
+        <h3>Vault Identity Mesh</h3>
+        <p>Zero-trust identity fabric for a 12,000-employee enterprise. Replaced legacy SSO with mutual TLS and policy-as-code.</p>
+        <div class="work-stack">
+          <span>Go</span><span>SPIFFE</span><span>OPA</span><span>Envoy</span>
+        </div>
+      </div>
+      <div class="work-card">
+        <div class="work-card-header">
+          <span class="work-tag">Frontend</span>
+          <span class="work-year">2024</span>
+        </div>
+        <h3>Helix Mission Control</h3>
+        <p>Real-time operations dashboard for satellite fleet management. 200+ telemetry streams visualized with 60fps WebGL rendering.</p>
+        <div class="work-stack">
+          <span>TypeScript</span><span>React</span><span>WebGL</span><span>gRPC-Web</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── IMPACT ─── -->
+<section class="section" id="impact">
+  <div class="section-inner">
+    <div class="section-label">Impact</div>
+    <h2 class="section-title">By the numbers</h2>
+    <div class="stats-row">
+      <div class="stat-block">
+        <div class="stat-number" data-target="47">0</div>
+        <div class="stat-label">Projects Shipped</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number" data-target="99">0</div>
+        <div class="stat-label">Uptime %</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number" data-target="18">0</div>
+        <div class="stat-label">Team Members</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number" data-target="6">0</div>
+        <div class="stat-label">Years Running</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<section class="section" id="voices">
+  <div class="section-inner">
+    <div class="section-label">Voices</div>
+    <h2 class="section-title">What clients say</h2>
+    <div class="testimonials-grid">
+      <div class="test-card">
+        <p class="test-quote">"NEON rebuilt our entire ingestion pipeline in eight weeks. It's been running for fourteen months without a single incident. That's unheard of for us."</p>
+        <div class="test-author">
+          <div class="test-avatar">KL</div>
+          <div>
+            <div class="test-name">Karen Liu</div>
+            <div class="test-role">VP Engineering, Meridian</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <p class="test-quote">"They don't just write code — they ask the questions nobody else thinks to ask. Our architecture is fundamentally better because of their involvement."</p>
+        <div class="test-author">
+          <div class="test-avatar">DP</div>
+          <div>
+            <div class="test-name">Daniel Park</div>
+            <div class="test-role">CTO, Atlas Systems</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <p class="test-quote">"The security audit was thorough and honest. They found three critical vulnerabilities our internal team missed, and helped us fix them the same week."</p>
+        <div class="test-author">
+          <div class="test-avatar">RS</div>
+          <div>
+            <div class="test-name">Rachel Santos</div>
+            <div class="test-role">CISO, Vault Financial</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <p class="test-quote">"Working with NEON felt like adding senior engineers to our team, not hiring contractors. They cared about the outcome, not just the deliverable."</p>
+        <div class="test-author">
+          <div class="test-avatar">MT</div>
+          <div>
+            <div class="test-name">Marcus Torres</div>
+            <div class="test-role">Lead Engineer, Helix Space</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title">Let's build something</h2>
+    <div class="contact-grid">
+      <form class="contact-form" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="you@company.com">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea placeholder="Tell us about the problem you're solving..."></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Send &rarr;</button>
+      </form>
+      <div class="contact-info">
+        <div class="contact-line">
+          <div class="contact-icon">@</div>
+          <div>
+            <div class="contact-line-label">Email</div>
+            <div class="contact-line-value">hello@neon.systems</div>
+          </div>
+        </div>
+        <div class="contact-line">
+          <div class="contact-icon">&gt;</div>
+          <div>
+            <div class="contact-line-label">GitHub</div>
+            <div class="contact-line-value">github.com/neon-systems</div>
+          </div>
+        </div>
+        <div class="contact-line">
+          <div class="contact-icon">#</div>
+          <div>
+            <div class="contact-line-label">Location</div>
+            <div class="contact-line-value">San Francisco &amp; Berlin<br>Remote-first since day one</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+  <div class="footer-left">&copy; 2026 NEON Digital Systems</div>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+// ─── Scroll reveal ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.section-inner').forEach(el => observer.observe(el));
+
+// ─── Topbar scroll effect ───
+const topbar = document.querySelector('.topbar');
+window.addEventListener('scroll', () => {
+  topbar.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// ─── Active nav tracking ───
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const sectionObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { threshold: 0.25 });
+
+sections.forEach(s => sectionObs.observe(s));
+
+// ─── Stat counters ───
+const statObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      let current = 0;
+      const duration = 1200;
+      const step = target / (duration / 16);
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.round(current);
+      }, 16);
+      statObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-number').forEach(el => statObs.observe(el));
+
+// ─── Smooth scroll ───
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (href === '#') return;
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    // Close mobile nav if open
+    document.querySelector('.nav-links').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
