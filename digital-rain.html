@@ -576,12 +576,29 @@
 
   requestAnimationFrame(render);
 
-  // PostMessage listener for parameter updates
+  // PostMessage listener for parameter updates and click forwarding
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'param') {
       switch (e.data.name) {
         case 'FALL_SPEED': FALL_SPEED = e.data.value; break;
         case 'COLUMN_DENSITY': COLUMN_DENSITY = e.data.value; break;
+      }
+    }
+    if (e.data && e.data.type === 'click') {
+      var cx = e.data.x;
+      var cy = e.data.y;
+      disturbWave(cx, -4 - Math.random() * 3);
+      spawnRipple(cx, waterSurface);
+      var colIdx = Math.floor(cx / FONT_SIZE);
+      for (var di = -1; di <= 1; di++) {
+        var ci = colIdx + di;
+        if (ci >= 0 && ci < columns.length) {
+          columns[ci].active = true;
+          columns[ci].y = cy;
+          columns[ci].speed = 2.5 + Math.random() * 2;
+          columns[ci].opacity = 0.8 + Math.random() * 0.2;
+          columns[ci].hitWater = false;
+        }
       }
     }
   });
