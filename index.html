@@ -99,29 +99,12 @@
 
   /* ─── HERO ─── */
   .hero {
-    position: relative; z-index: 1; width: 100%; min-height: 100vh;
+    position: relative; z-index: 1; width: 100%; height: 100vh;
     display: flex; align-items: center; justify-content: center;
-    padding: 100px 40px 40px;
+    text-align: center; padding: 0 24px;
   }
-  .hero-inner {
-    max-width: 1100px; width: 100%;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
-  }
-  .hero-content { max-width: 560px; }
-
-  .hero-image {
-    display: flex; justify-content: center; align-items: flex-end;
-    position: relative;
-  }
-  .hero-image img {
-    max-width: 100%; height: auto; max-height: 520px;
-    filter: drop-shadow(0 0 40px rgba(0, 255, 65, 0.15)) drop-shadow(0 0 80px rgba(0, 255, 65, 0.08));
-    animation: heroFloat 4s ease-in-out infinite;
-  }
-  @keyframes heroFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
+  .hero-inner { max-width: 720px; }
+  .hero-content { max-width: 720px; }
 
   .hero-tag {
     font-family: var(--mono); font-size: 12px; font-weight: 400;
@@ -366,10 +349,6 @@
       backdrop-filter: blur(16px); padding: 16px; border-bottom: 1px solid var(--border); gap: 4px;
     }
     .nav-cta { margin-left: 0; }
-    .hero-inner { grid-template-columns: 1fr; text-align: center; }
-    .hero-content { max-width: 100%; }
-    .hero-image img { max-height: 360px; }
-    .hero-actions { justify-content: center; }
     .cap-grid { grid-template-columns: 1fr; }
     .voices-grid { grid-template-columns: 1fr; }
     .how-steps { grid-template-columns: 1fr; }
@@ -425,9 +404,6 @@
         <a href="/dashboard" class="btn btn-primary">Get Started &rarr;</a>
         <a href="#pricing" class="btn btn-ghost">See Pricing</a>
       </div>
-    </div>
-    <div class="hero-image">
-      <img src="ego-hero.png" alt="EgoCalls">
     </div>
   </div>
   <div class="scroll-indicator">
@@ -490,8 +466,11 @@
     <div class="section-desc"><p>Six examples from a growing library of voices. Pick one that fits your brand, or we'll create one just for you.</p></div>
     <div class="voices-grid">
       <div class="voice-card">
-        <div class="voice-meta"><span class="voice-name">James</span><span class="voice-role">Mitchell & Associates Law</span></div>
-        <p class="voice-desc">"Thank you for calling Mitchell and Associates. This is James, how can I help you today?"</p>
+        <div style="text-align:center;margin-bottom:16px;">
+          <img src="ego-hero.png" alt="Corey" style="width:120px;height:120px;object-fit:cover;object-position:top;border-radius:50%;border:2px solid var(--border);filter:drop-shadow(0 0 12px rgba(0,255,65,0.2));">
+        </div>
+        <div class="voice-meta"><span class="voice-name">Corey</span><span class="voice-role">Mitchell & Associates Law</span></div>
+        <p class="voice-desc">"Thank you for calling Mitchell and Associates. This is Corey, how can I help you today?"</p>
         <button class="voice-play" onclick="playVoice(this)" data-src="audio/james.mp3"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button>
         <audio preload="none" src="audio/james.mp3"></audio>
       </div>
